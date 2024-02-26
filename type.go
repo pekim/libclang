@@ -2,7 +2,10 @@ package libclang
 
 // #include <clang-c/Index.h>
 import "C"
-import "strings"
+
+import (
+	"strings"
+)
 
 type Type C.CXType
 
@@ -17,4 +20,16 @@ func (t Type) Spelling() string {
 func (t Type) IsConst() bool {
 	return C.clang_isConstQualifiedType(t.c()) > 0 ||
 		strings.HasPrefix(t.Spelling(), "const ")
+}
+
+func (t Type) CanonicalType() Type {
+	return Type(C.clang_getCanonicalType(t.c()))
+}
+
+func (t Type) PointeeType() Type {
+	return Type(C.clang_getPointeeType(t.c()))
+}
+
+func (t Type) Kind() TypeKind {
+	return TypeKind(t.kind)
 }

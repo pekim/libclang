@@ -16,7 +16,8 @@ func main() {
 	lc.VisitChildren(unit.Cursor(), func(cursor, parent lc.Cursor) lc.ChildVisitResult {
 		typ := cursor.Type()
 		fmt.Println(cursor.Spelling(), "==>", typ.Spelling())
-		// fmt.Println("  ", cursor.IsStatic(), typ.IsConst())
+		// fmt.Println("  ", cursor.IsStatic(), typ.IsConst(), typ.Kind())
+
 		return lc.ChildVisit_Continue
 	})
 
