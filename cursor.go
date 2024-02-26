@@ -20,3 +20,13 @@ func (c Cursor) Type() Type {
 func (c Cursor) IsStatic() bool {
 	return C.clang_Cursor_getStorageClass(c.c()) == C.CX_SC_Static
 }
+
+func (c Cursor) Location() (string, int, int) {
+	loc := C.clang_getCursorLocation(c.c())
+	var file C.CXFile
+	var line C.unsigned
+	var column C.unsigned
+	C.clang_getSpellingLocation(loc, &file, &line, &column, nil)
+	filename := C.clang_getFileName(file)
+	return cxString(filename), int(line), int(column)
+}
