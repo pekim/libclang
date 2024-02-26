@@ -47,10 +47,6 @@ func getChildVisitCallbackId(cb childVisitCallback) C.CXClientData {
 	return intToCXClientData(childVisitCallbackId)
 }
 
-func visitChildren(cursor C.CXCursor, cb childVisitCallback) {
-	C.visitChildren(cursor, getChildVisitCallbackId(cb))
-}
-
 //export visitChildrenCallback
 func visitChildrenCallback(cursor C.CXCursor, parent C.CXCursor, data C.CXClientData) C.enum_CXChildVisitResult {
 	var pinner runtime.Pinner
@@ -62,6 +58,10 @@ func visitChildrenCallback(cursor C.CXCursor, parent C.CXCursor, data C.CXClient
 	return cb(cursor, parent)
 }
 
+func visitChildren(cursor C.CXCursor, cb childVisitCallback) {
+	C.visitChildren(cursor, getChildVisitCallbackId(cb))
+}
+
 func VisitChildren(cursor Cursor, cb ChildVisitCallback) {
 	visitChildren(cursor.c(), func(cursor, parent C.CXCursor) C.enum_CXChildVisitResult {
 		var pinner runtime.Pinner
@@ -69,6 +69,8 @@ func VisitChildren(cursor Cursor, cb ChildVisitCallback) {
 		pinner.Pin(&parent)
 		defer pinner.Unpin()
 
+		// Ignore children that are in system headers.
+		// May want to make this configurable in the future.
 		loc := C.clang_getCursorLocation(cursor)
 		inSystemHeader := C.clang_Location_isInSystemHeader(loc) != 0
 		if inSystemHeader {
