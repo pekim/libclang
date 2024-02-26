@@ -13,6 +13,7 @@ static void visitChildren(CXCursor parent, CXClientData client_data) {
 import "C"
 
 import (
+	"runtime"
 	"sync"
 )
 
@@ -52,12 +53,22 @@ func visitChildren(cursor C.CXCursor, cb childVisitCallback) {
 
 //export visitChildrenCallback
 func visitChildrenCallback(cursor C.CXCursor, parent C.CXCursor, data C.CXClientData) C.enum_CXChildVisitResult {
+	var pinner runtime.Pinner
+	pinner.Pin(&cursor)
+	pinner.Pin(&parent)
+	defer pinner.Unpin()
+
 	cb := getChildVisitCallbackForId(data)
 	return cb(cursor, parent)
 }
 
 func VisitChildren(cursor Cursor, cb ChildVisitCallback) {
 	visitChildren(cursor.c(), func(cursor, parent C.CXCursor) C.enum_CXChildVisitResult {
+		var pinner runtime.Pinner
+		pinner.Pin(&cursor)
+		pinner.Pin(&parent)
+		defer pinner.Unpin()
+
 		loc := C.clang_getCursorLocation(cursor)
 		inSystemHeader := C.clang_Location_isInSystemHeader(loc) != 0
 		if inSystemHeader {
