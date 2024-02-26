@@ -2,7 +2,6 @@ package libclang
 
 // #include <stdlib.h>
 // #include <stdio.h>
-// #include <string.h>
 // #include <clang-c/Index.h>
 /*
 
@@ -51,14 +50,4 @@ func parseUnit(sourceFilepath string, parseArgs []*C.char) error {
 func visitCallback(cursor C.CXCursor, parent C.CXCursor, data C.CXClientData) C.enum_CXChildVisitResult {
 	fmt.Println("visit", data, getCursorSpelling(cursor))
 	return C.CXChildVisit_Continue
-}
-
-func cxString(str C.CXString) string {
-	cString := C.strdup(C.clang_getCString(str))
-	C.clang_disposeString(str)
-	return C.GoString(cString)
-}
-
-func getCursorSpelling(cursor C.CXCursor) string {
-	return cxString(C.clang_getCursorSpelling(cursor))
 }
