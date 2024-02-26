@@ -11,6 +11,7 @@ enum CXChildVisitResult visitCallback(CXCursor cursor, CXCursor parent, CXClient
 static void visitChildren(CXCursor parent, CXClientData client_data) {
 	clang_visitChildren(parent, visitCallback, client_data);
 }
+
 */
 import "C"
 
@@ -37,10 +38,7 @@ func parseUnit(sourceFilepath string, parseArgs []*C.char) error {
 	}
 
 	cursor := C.clang_getTranslationUnitCursor(unit)
-	// var pnrCursor runtime.Pinner
-	// pnrCursor.Pin(&cursor)
-	// fmt.Println(cursor)
-	C.visitChildren(cursor, C.CXClientData(unsafe.Pointer(uintptr(42))))
+	C.visitChildren(cursor, intToCXClientData(42))
 
 	// cleanup
 	C.clang_disposeIndex(index)
