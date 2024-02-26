@@ -30,3 +30,11 @@ func (c Cursor) Location() (string, int, int) {
 	filename := C.clang_getFileName(file)
 	return cxString(filename), int(line), int(column)
 }
+
+func (c Cursor) EnumConstantDeclValue() int64 {
+	return int64(C.clang_getEnumConstantDeclValue(c.c()))
+}
+
+func (c Cursor) EnumConstantDeclUnsignedValue() uint64 {
+	return uint64(C.clang_getEnumConstantDeclUnsignedValue(c.c()))
+}
