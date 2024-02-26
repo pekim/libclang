@@ -15,7 +15,7 @@ func main() {
 	}
 
 	lc.VisitChildren(unit.Cursor(), func(cursor, parent libclang.Cursor) libclang.ChildVisitResult {
-		fmt.Println(cursor.Spelling())
+		fmt.Println(cursor.Spelling(), "==>", cursor.Type().Spelling())
 		return lc.ChildVisit_Continue
 	})
 

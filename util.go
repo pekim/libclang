@@ -3,6 +3,7 @@ package libclang
 // #include <clang-c/Index.h>
 // #include <string.h>
 import "C"
+
 import (
 	"errors"
 	"fmt"
