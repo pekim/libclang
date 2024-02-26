@@ -38,3 +38,11 @@ func (c Cursor) EnumConstantDeclValue() int64 {
 func (c Cursor) EnumConstantDeclUnsignedValue() uint64 {
 	return uint64(C.clang_getEnumConstantDeclUnsignedValue(c.c()))
 }
+
+func (c Cursor) Availability() AvailabilityKind {
+	return AvailabilityKind(C.clang_getCursorAvailability(c.c()))
+}
+
+func (c Cursor) IsDeprecated() bool {
+	return c.Availability() == Availability_Deprecated
+}

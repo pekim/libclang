@@ -15,6 +15,7 @@ func main() {
 
 	lc.VisitChildren(unit.Cursor(), func(cursor, parent lc.Cursor) lc.ChildVisitResult {
 		typ := cursor.Type()
+
 		if typ.Kind() == lc.Type_Enum {
 			fmt.Println(cursor.Spelling(), "==>", typ.Spelling())
 			lc.VisitChildren(cursor, func(cursor, parent lc.Cursor) lc.ChildVisitResult {

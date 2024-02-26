@@ -33,3 +33,11 @@ func (t Type) PointeeType() Type {
 func (t Type) Kind() TypeKind {
 	return TypeKind(t.kind)
 }
+
+func (t Type) IsFunctionTypeVariadic() bool {
+	return C.clang_isFunctionTypeVariadic(t.c()) == 1
+}
+
+func (t Type) ResultType() Type {
+	return Type(C.clang_getResultType(t.c()))
+}
