@@ -22,7 +22,7 @@ func Parse() {
 		}
 	}()
 
-	parseUnit("/usr/include/stdlib.h", parseArgs)
+	parseUnit("/usr/include/clang-c/Index.h", parseArgs)
 }
 
 func clangResourceDir() string {

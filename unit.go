@@ -47,7 +47,12 @@ func parseUnit(sourceFilepath string, parseArgs []*C.char) error {
 
 //export visitCallback
 func visitCallback(cursor C.CXCursor, parent C.CXCursor, data C.CXClientData) C.enum_CXChildVisitResult {
-	fmt.Println("visit", data, getCursorSpelling(cursor))
+	loc := C.clang_getCursorLocation(cursor)
+	inSystemHeader := C.clang_Location_isInSystemHeader(loc) != 0
+
+	if !inSystemHeader {
+		fmt.Println("visit", data, getCursorSpelling(cursor))
+	}
 	return C.CXChildVisit_Continue
 }
 
