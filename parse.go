@@ -1,7 +1,6 @@
 package libclang
 
 // #include <stdlib.h>
-// #include "parse.h"
 import "C"
 
 import (

@@ -1,7 +1,6 @@
 package libclang
 
 // #include <stdlib.h>
-// #include <stdio.h>
 // #include <clang-c/Index.h>
 /*
 
@@ -51,3 +50,29 @@ func visitCallback(cursor C.CXCursor, parent C.CXCursor, data C.CXClientData) C.
 	fmt.Println("visit", data, getCursorSpelling(cursor))
 	return C.CXChildVisit_Continue
 }
+
+/*
+   CXSourceLocation loc = clang_getCursorLocation(cursor);
+   if (clang_Location_isInSystemHeader(loc) != 0)
+   {
+       return CXChildVisit_Continue;
+   }
+
+   switch (clang_getCursorKind(cursor))
+   {
+   case CXCursor_StructDecl:
+   {
+       CXType type = clang_getCursorType(cursor);
+       char *name = getCursorSpelling(cursor);
+
+       printf("struct : %s\n", name);
+   }
+   break;
+   case CXCursor_FunctionDecl:
+   {
+       CXType type = clang_getCursorType(cursor);
+       char *name = getCursorSpelling(cursor);
+
+       printf("function : %s\n", name);
+   }
+*/
