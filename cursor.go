@@ -16,3 +16,7 @@ func (c Cursor) Spelling() string {
 func (c Cursor) Type() Type {
 	return Type(C.clang_getCursorType(c.c()))
 }
+
+func (c Cursor) IsStatic() bool {
+	return C.clang_Cursor_getStorageClass(c.c()) == C.CX_SC_Static
+}

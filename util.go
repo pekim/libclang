@@ -18,19 +18,6 @@ func cxString(str C.CXString) string {
 	return C.GoString(cString)
 }
 
-func getTypeSpelling(typ C.CXType) string {
-	return cxString(C.clang_getTypeSpelling(typ))
-}
-
-func isCursorStatic(cursor C.CXCursor) bool {
-	return C.clang_Cursor_getStorageClass(cursor) == C.CX_SC_Static
-}
-
-func isConstType(typ C.CXType) bool {
-	return C.clang_isConstQualifiedType(typ) > 0 ||
-		strings.HasPrefix(getTypeSpelling(typ), "const ")
-}
-
 func clangResourceDir() (string, error) {
 	out, err := exec.Command("clang", "-print-resource-dir").Output()
 	if err != nil {

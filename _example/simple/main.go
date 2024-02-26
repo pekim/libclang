@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/pekim/libclang"
 	lc "github.com/pekim/libclang"
 )
 
@@ -14,8 +13,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	lc.VisitChildren(unit.Cursor(), func(cursor, parent libclang.Cursor) libclang.ChildVisitResult {
-		fmt.Println(cursor.Spelling(), "==>", cursor.Type().Spelling())
+	lc.VisitChildren(unit.Cursor(), func(cursor, parent lc.Cursor) lc.ChildVisitResult {
+		typ := cursor.Type()
+		fmt.Println(cursor.Spelling(), "==>", typ.Spelling())
+		// fmt.Println("  ", cursor.IsStatic(), typ.IsConst())
 		return lc.ChildVisit_Continue
 	})
 
