@@ -2,15 +2,6 @@ package libclang
 
 // #include <stdlib.h>
 // #include <clang-c/Index.h>
-/*
-
-enum CXChildVisitResult visitCallback(CXCursor cursor, CXCursor parent, CXClientData client_data);
-
-static void visitChildren(CXCursor parent, CXClientData client_data) {
-	clang_visitChildren(parent, visitCallback, client_data);
-}
-
-*/
 import "C"
 
 import (
@@ -36,7 +27,18 @@ func parseUnit(sourceFilepath string, parseArgs []*C.char) error {
 	}
 
 	cursor := C.clang_getTranslationUnitCursor(unit)
-	C.visitChildren(cursor, intToCXClientData(42))
+	visitChildren(cursor,
+		func(cursor, parent C.CXCursor) C.enum_CXChildVisitResult {
+			loc := C.clang_getCursorLocation(cursor)
+			inSystemHeader := C.clang_Location_isInSystemHeader(loc) != 0
+
+			if !inSystemHeader {
+				fmt.Println(getCursorSpelling(cursor))
+			}
+
+			return C.CXChildVisit_Continue
+		},
+	)
 
 	// cleanup
 	C.clang_disposeIndex(index)
@@ -44,40 +46,3 @@ func parseUnit(sourceFilepath string, parseArgs []*C.char) error {
 
 	return nil
 }
-
-//export visitCallback
-func visitCallback(cursor C.CXCursor, parent C.CXCursor, data C.CXClientData) C.enum_CXChildVisitResult {
-	loc := C.clang_getCursorLocation(cursor)
-	inSystemHeader := C.clang_Location_isInSystemHeader(loc) != 0
-
-	if !inSystemHeader {
-		fmt.Println("visit", data, getCursorSpelling(cursor))
-	}
-	return C.CXChildVisit_Continue
-}
-
-/*
-   CXSourceLocation loc = clang_getCursorLocation(cursor);
-   if (clang_Location_isInSystemHeader(loc) != 0)
-   {
-       return CXChildVisit_Continue;
-   }
-
-   switch (clang_getCursorKind(cursor))
-   {
-   case CXCursor_StructDecl:
-   {
-       CXType type = clang_getCursorType(cursor);
-       char *name = getCursorSpelling(cursor);
-
-       printf("struct : %s\n", name);
-   }
-   break;
-   case CXCursor_FunctionDecl:
-   {
-       CXType type = clang_getCursorType(cursor);
-       char *name = getCursorSpelling(cursor);
-
-       printf("function : %s\n", name);
-   }
-*/
