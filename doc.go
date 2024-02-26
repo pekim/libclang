@@ -11,7 +11,7 @@ functions, constants, enums, structs, and so on.
 
 # pre-requisites
 
-clang needs to be installed.
+The clang dev package (with header files) needs to be installed.
 
 	[sudo] dnf install clang-devel
 
