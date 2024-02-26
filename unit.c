@@ -19,12 +19,18 @@ enum CXChildVisitResult visitUnitCursors(CXCursor cursor, CXCursor parent,
     {
     case CXCursor_StructDecl:
     {
-        printf("struct\n");
+        CXType type = clang_getCursorType(cursor);
+        char *name = getCursorSpelling(cursor);
+
+        printf("struct : %s\n", name);
     }
     break;
     case CXCursor_FunctionDecl:
     {
-        printf("function\n");
+        CXType type = clang_getCursorType(cursor);
+        char *name = getCursorSpelling(cursor);
+
+        printf("function : %s\n", name);
     }
     break;
     case CXCursor_EnumDecl:
