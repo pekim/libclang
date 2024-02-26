@@ -1,6 +1,7 @@
 package libclang
 
 // #include <clang-c/Index.h>
+// #include <stdlib.h>
 // #include <string.h>
 import "C"
 
@@ -10,10 +11,12 @@ import (
 	"log"
 	"os/exec"
 	"strings"
+	"unsafe"
 )
 
 func cxString(str C.CXString) string {
 	cString := C.strdup(C.clang_getCString(str))
+	defer C.free(unsafe.Pointer(cString))
 	C.clang_disposeString(str)
 	return C.GoString(cString)
 }
