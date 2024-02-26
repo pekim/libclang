@@ -13,6 +13,11 @@ func (c Cursor) Spelling() string {
 	return cxString(C.clang_getCursorSpelling(c.c()))
 }
 
+func (c Cursor) Kind() CursorKind {
+	kind := C.clang_getCursorKind(c.c())
+	return CursorKind(kind)
+}
+
 func (c Cursor) Type() Type {
 	return Type(C.clang_getCursorType(c.c()))
 }
