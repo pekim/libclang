@@ -45,12 +45,3 @@ func clangResourceDir() string {
 
 	return resDir
 }
-
-func parseUnit(sourceFilepath string, parseArgs []*C.char) {
-	cFilepath := C.CString(sourceFilepath)
-	defer C.free(unsafe.Pointer(cFilepath))
-
-	unit := C.parseUnit(cFilepath, &parseArgs[0], C.int(len(parseArgs)))
-
-	C.freeUnit(unit)
-}
