@@ -1,7 +1,23 @@
 package main
 
-import "github.com/pekim/libclang"
+import (
+	"fmt"
+	"log"
+
+	"github.com/pekim/libclang"
+	lc "github.com/pekim/libclang"
+)
 
 func main() {
-	libclang.Parse()
+	unit, err := lc.ParseUnit("/usr/include/clang-c/Index.h")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	lc.VisitChildren(unit.Cursor(), func(cursor, parent libclang.Cursor) libclang.ChildVisitResult {
+		fmt.Println(cursor.Spelling())
+		return lc.ChildVisit_Continue
+	})
+
+	unit.Destroy()
 }

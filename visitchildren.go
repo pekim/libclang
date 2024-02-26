@@ -16,7 +16,14 @@ import (
 	"sync"
 )
 
+type ChildVisitResult C.enum_CXChildVisitResult
+
+const ChildVisit_Break = ChildVisitResult(C.CXChildVisit_Break)
+const ChildVisit_Continue = ChildVisitResult(C.CXChildVisit_Continue)
+const ChildVisit_Recurse = ChildVisitResult(C.CXChildVisit_Recurse)
+
 type childVisitCallback func(cursor C.CXCursor, parent C.CXCursor) C.enum_CXChildVisitResult
+type ChildVisitCallback func(cursor Cursor, parent Cursor) ChildVisitResult
 
 var childVisitCallbackId int
 var childVisitCallbackInstanceMap = make(map[int]childVisitCallback)
@@ -47,4 +54,17 @@ func visitChildren(cursor C.CXCursor, cb childVisitCallback) {
 func visitChildrenCallback(cursor C.CXCursor, parent C.CXCursor, data C.CXClientData) C.enum_CXChildVisitResult {
 	cb := getChildVisitCallbackForId(data)
 	return cb(cursor, parent)
+}
+
+func VisitChildren(cursor Cursor, cb ChildVisitCallback) {
+	visitChildren(cursor.c(), func(cursor, parent C.CXCursor) C.enum_CXChildVisitResult {
+		loc := C.clang_getCursorLocation(cursor)
+		inSystemHeader := C.clang_Location_isInSystemHeader(loc) != 0
+		if inSystemHeader {
+			return C.CXChildVisit_Continue
+		}
+
+		res := cb(Cursor(cursor), Cursor(parent))
+		return C.enum_CXChildVisitResult(res)
+	})
 }
