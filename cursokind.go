@@ -6,7 +6,7 @@ import "C"
 type CursorKind C.enum_CXCursorKind
 
 func (k CursorKind) String() string {
-	return CursorKindStrings[k]
+	return cursorKindStrings[k]
 }
 
 const Cursor_UnexposedDecl = CursorKind(C.CXCursor_UnexposedDecl)
@@ -302,7 +302,7 @@ const Cursor_FirstExtraDecl = CursorKind(C.CXCursor_FirstExtraDecl)
 const Cursor_LastExtraDecl = CursorKind(C.CXCursor_LastExtraDecl)
 const Cursor_OverloadCandidate = CursorKind(C.CXCursor_OverloadCandidate)
 
-var CursorKindStrings = map[CursorKind]string{
+var cursorKindStrings = map[CursorKind]string{
 	Cursor_UnexposedDecl:                      "UnexposedDecl",
 	Cursor_StructDecl:                         "StructDecl",
 	Cursor_UnionDecl:                          "UnionDecl",
